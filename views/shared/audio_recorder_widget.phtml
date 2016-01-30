@@ -1,0 +1,59 @@
+
+<div id="ar-widget"
+     onclick="requestMic(this);"
+     class="ar-tooltip"
+     data-tooltip="Do you have something to say about the image or document displayed here? Click here to record your story. You can save the result on your computer, or upload it to improve our collection.">
+  <button id="ar-record-btn" title="Record">&#9679;</button>
+  <button id="ar-pause-btn" disabled title="Pause">||</button>
+  <button id="ar-stop-btn" onclick="stopRecording(this);" disabled>&#9632</button>
+  <p id="ar-status">Record your story!</p>
+</div>
+<h2 id="recordings">Recordings</h2>
+<ul id="recordingslist"></ul>
+<pre id="log"></pre>
+
+<script>
+ AUDIO_RECORDER_UPLOAD_URL = "<?php echo public_url("items/upload-audio/$this->item_id"); ?>"
+ AUDIO_RECORDER_JAVASCRIPT_DIR = "<?php echo public_url("plugins/AudioRecorder/views/shared/javascripts/"); ?>"
+</script>
+<script src="<?php echo public_url("plugins/AudioRecorder/views/shared/javascripts/init_widget.js") ?>"></script>
+<script src="<?php echo public_url("plugins/AudioRecorder/views/shared/javascripts/recordmp3.js"); ?>"></script>
+
+
+
+<div id="ar-dialog" style="display:none;">
+  <form id="ar-upload-form">
+    <div class="field">
+      <div id="ar-username" class="two columns alpha">
+        <label for="ar-username"><?php echo __('Creator name:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php echo get_view()->formText('ar-username', $this->username); ?>
+      </div>
+        <p class="explanation"><?php echo __('Please enter the preferred name of the person or people who voice(s) appear on the recording.'); ?></p>
+    </div>
+
+    <div class="field">
+      <div id="ar-email" class="two columns alpha">
+        <label for="ar-email"><?php echo __('Email:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php echo get_view()->formText('ar-email', $this->email); ?>
+      </div>
+        <p class="explanation"><?php echo __('We will keep this address private, and use it only if we have administrative questions about your audio upload.'); ?></p>
+
+    </div>
+
+    <div class="field">
+      <div id="ar-license" class="two columns alpha">
+        <label for="ar-license"><?php echo __('License Agreement:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php 
+        echo get_view()->formCheckBox('ar-license','yes',null,array('yes','no')); 
+        ?>
+      </div>
+      <p class="explanation"><?php echo __('This certifies that we can share your story and its contents to improve our collection. For more details <a href="http://google.com">click here</a>.'); ?></p>
+    </div>
+  </form>
+</div>

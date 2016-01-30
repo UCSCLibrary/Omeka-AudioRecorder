@@ -1,0 +1,143 @@
+#ar-widget > button {
+    width:50px;
+    height:50px;
+    border-radius:3px;
+    font-size:30px;
+}
+
+#log {
+    display:none;
+}
+
+.ar-recording {
+    max-width:700px;
+    border-radius:5px;
+}
+
+.ar-recording:disabled {
+    border-radius: 5px;
+    padding: 2px;
+    width: 600px;
+}
+
+.ar-recording button {
+    margin:3px;
+}
+
+.ar-recording > audio {
+    vertical-align:middle;
+    margin-right:5px;
+}
+
+ul#recordingslist {
+    list-style-type:none;
+    padding-left:0px;
+    margin-top:0px;
+}
+
+h2#recordings {
+    margin-bottom:0.2em;
+}
+
+.ar-recording > p {
+    display:inline;
+    max-width:100px;
+}
+
+
+
+#ar-dialog {
+    padding:15px;
+}
+
+p#ar-status{
+    font-size:1em;
+}
+
+#ar-dialog div.five.columns {
+    margin-bottom:10px;
+    margin-left:20px;
+    width:auto;
+float:left;
+}
+
+
+#ar-dialog div.five.columns label{
+    clear:left;
+    float:left;
+    width:auto;
+}
+#ar-dialog div.five.columns label input{
+    float:left;
+    width:auto;
+}
+
+#ar-dialog .explanation{
+    font-size: 0.8em;
+    line-height: 1em;
+    font-weight:normal;
+    float:left;
+    clear:both;
+}
+
+div.ui-dialog-buttonset {
+    text-align: center;
+}
+
+button.ui-button {
+    margin:5px;
+    color:black !important;
+}
+
+#ar-dialog .field {
+    padding: 10px 0 0 0;
+}
+
+#ar-record-btn {
+    color:red !important;
+}
+
+#ar-widget > p {
+    display:inline;
+}
+
+#ar-widget {
+    max-width:360px;
+    border:1px solid black;
+    border-radius:4px;
+    padding:3px;
+}
+
+h2#recordings {
+    display:none;
+}
+
+.disabled {
+    background-color:gray;
+}
+
+#ar-widget.disabled {
+    opacity:0.5;
+}
+
+.ar-tooltip{
+#    display: inline;
+    position: relative;
+}
+
+
+
+.ar-tooltip:hover:after{
+    background: #333;
+    background: rgba(0,0,0,.8);
+    border-radius: 5px;
+    top: 40px;
+    color: #fff;
+    content: attr(data-tooltip);
+    left: 175px;
+    padding: 5px 15px;
+    position: absolute;
+    z-index: 98;
+    width: 320px;
+}
+
