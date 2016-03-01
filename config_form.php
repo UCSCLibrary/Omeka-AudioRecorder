@@ -46,3 +46,37 @@
        ); ?>
     </div>
 </div>
+
+<div class="field">
+  <div id="audio_recorder_attachment" class="two columns alpha">
+    <label for="audio_recorder_attachment"><?php echo __('How would you like to attach recordings to items?'); ?></label>
+  </div>
+  <div class="inputs five columns omega">
+    <p class="explanation"><?php echo __(
+                           'When a user records a story related to an item, we can either attach it to that item as a file or we can create a new item for the recording with a link to the original item in its metadata.'
+                           ); ?></p>
+    <?php echo get_view()->formRadio(
+        'audio_recorder_attachment',
+        get_option('audio_recorder_attachment'),
+        null,
+        array(
+            'file' => 'Attach recording to item as a file',
+            'item' => 'Create a new item for each recording'
+        )
+    ); ?>
+  </div>
+</div>
+
+<div class="field">
+    <div id="audio_recorder_public_label" class="two columns alpha">
+        <label for="audio_recorder_public"><?php echo __('Make newly created recording items public?'); ?></label>
+    </div>
+    <div class="inputs five columns omega">
+        <p class="explanation"><?php echo __(
+            'If checked, this plugin will make newly created recording items viewable by the public by default.'
+        ); ?></p>
+        <?php echo get_view()->formCheckbox('audio_recorder_public', true, 
+        array('checked'=>(boolean)get_option('audio_recorder_public'))); ?>
+    </div>
+</div>
+

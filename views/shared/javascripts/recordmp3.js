@@ -149,20 +149,15 @@
         encoderWorker.postMessage({ cmd: 'finish'});
         encoderWorker.onmessage = function(e) {
           if (e.data.cmd == 'data') {
-            console.log('done converting');
-            console.log(e);
-	    log.innerHTML += "\n" + "Done converting to Mp3";
 	    var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {type: 'audio/mp3'});
             //uploadAudio(mp3Blob);
-
+            
 	    var url = 'data:audio/mp3;base64,'+encode64(e.data.buf);
             activateLi(li,url,mp3Blob);
           }
         };
       };
-
       fileReader.readAsArrayBuffer(blob);
-
       currCallback(blob);
     }
 
@@ -233,13 +228,14 @@
       dialog.dialog("open");
     }
 
-    function uploadAudio(mp3Data){
+    function uploadAudio(mp3Blob){
       var form = jQuery('#ar-upload-form');
       var reader = new FileReader();
       reader.onload = function(event){
 	var fd = new FormData(form[0])
 	var mp3Name = encodeURIComponent('audio_recording_' + new Date().getTime() + '.mp3');
 	fd.append('fname', mp3Name);
+//LINE BELOW FAILS TO CONVERT EVENT RESULT TO STRING CORRECTLY!
 	fd.append('data', event.target.result);
 	jQuery.ajax({
 	  type: 'POST',
@@ -248,10 +244,12 @@
 	  processData: false,
 	  contentType: false
 	}).done(function(data) {
-	  log.innerHTML += "\n" + data;
+	  console.log(data);
+	  alert('Upload processed successfully!');
 	});
       };
-      reader.readAsDataURL(mp3Data);
+      reader.readAsDataURL(mp3Blob);
+//      reader.readAsArrayBuffer(mp3Blob);
     }
 
     source.connect(this.node);

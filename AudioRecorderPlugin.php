@@ -25,10 +25,12 @@ class AudioRecorderPlugin extends Omeka_Plugin_AbstractPlugin
     protected $_hooks = array('define_routes','config_form','config','admin_items_show','public_items_show', 'public_head');
 
     function showWidget($item){
-        get_view()->partial('audio_recorder_widget.phtml',array('item_id'=>$item->id));
+
+        echo(get_view()->partial('audio_recorder_widget.phtml',array('item_id'=>$item->id)));
     }
 
     function hookPublicHead(){
+        queue_js_file('getUserMedia.min');
         queue_css_file('audio_recorder');
         queue_css_file('dialog/jquery-ui.min');
         queue_css_file('dialog/jquery-ui.theme.min');
@@ -58,7 +60,7 @@ class AudioRecorderPlugin extends Omeka_Plugin_AbstractPlugin
         $this->showWidget($item);
     }
 
-    function hookAdminItemsShow(){
+    function hookAdminItemsShow($args){
         $item = $args['item'];
         if(!get_option('audio_recorder_item_show'))
             return;
@@ -90,6 +92,8 @@ class AudioRecorderPlugin extends Omeka_Plugin_AbstractPlugin
         set_option('audio_recorder_item_show',(int)(boolean)$_POST['audio_recorder_item_show']);
         set_option('audio_recorder_item_record_route',(int)(boolean)$_POST['audio_recorder_item_record_route']);
         set_option('audio_recorder_role',$_POST['audio_recorder_role']);
+        set_option('audio_recorder_attachment',$_POST['audio_recorder_attachment']);
+        set_option('audio_recorder_public',$_POST['audio_recorder_public']);
     }
 
     function hookDefineRoutes($args)

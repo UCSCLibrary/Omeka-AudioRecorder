@@ -58,7 +58,15 @@ p#ar-status{
     margin-bottom:10px;
     margin-left:20px;
     width:auto;
-float:left;
+    float:left;
+    clear:none;
+}
+
+#ar-dialog .field .columns.alpha {
+	float:left;
+margin: 0;
+    width: 29%;
+    font-weight:bold;
 }
 
 
@@ -91,6 +99,9 @@ button.ui-button {
 
 #ar-dialog .field {
     padding: 10px 0 0 0;
+ width:100%;
+    overflow:auto;
+    border-bottom:1px solid #ccc;
 }
 
 #ar-record-btn {
