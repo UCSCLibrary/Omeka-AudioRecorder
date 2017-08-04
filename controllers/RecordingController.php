@@ -71,7 +71,7 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         $fauxPost = array(
 	    'Elements'=>$elements,
 	    'item_type_id'=>$oralHistoryType->id, //get the id of the Audio item type
-//	    'collection_id'=>''
+//	    'collection_id'=>'',
             'public'=>(boolean)get_option('audio_recorder_public'),
 	);
 
@@ -92,13 +92,11 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
                 die('Invalid token. Are you using a weird proxy or something?');
         }
 
-
         if(!is_object(
             $item = $this->_getItem()))
                 die("Failure finding or creating item");
 
         //           #TODO check CSRF
-          
         $filename = 'audio_recording_' . date( 'Y-m-d-H-i-s' ) .'.mp3';
         $filename = is_null($_POST['fname']) ? $_POST['fname'] : $filename;
 
@@ -135,7 +133,6 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         $this->view->username = is_object($user = current_user()) ? $user->name : "";
         $this->view->email = is_object($user) ? $user->email : "";
     }	
-
     
     private function _addRelations($recItem,$item,$creator=nil,$contributor = nil,$recType='Item')
     {
@@ -222,7 +219,6 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
             $relation->save();
         }
     }
-
 
 }
 ?>
