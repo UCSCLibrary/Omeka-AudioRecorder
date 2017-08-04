@@ -1,11 +1,8 @@
 importScripts('libmp3lame.min.js');
 
-console.log('mp3worker loaded');
-
 var mp3codec;
 
 self.onmessage = function(e) {
-  console.log('mp3worker self onmessage running');
 	switch (e.data.cmd) {
 	case 'init':
 		if (!e.data.config) {
@@ -21,6 +18,7 @@ self.onmessage = function(e) {
 		Lame.set_bitrate(mp3codec, e.data.config.bitrate || 128);
 
 		Lame.init_params(mp3codec);
+/*
 		console.log('Version :', Lame.get_version() + ' / ',
 			'Mode: '+Lame.get_mode(mp3codec) + ' / ',
 			'Samples: '+Lame.get_num_samples(mp3codec) + ' / ',
@@ -29,6 +27,7 @@ self.onmessage = function(e) {
 			'Output Samplate: '+ Lame.get_in_samplerate(mp3codec) + ' / ',
 			'Bitlate :' +Lame.get_bitrate(mp3codec) + ' / ',
 			'VBR :' + Lame.get_VBR(mp3codec));
+*/
 		break;
 	case 'encode':
 		var mp3data = Lame.encode_buffer_ieee_float(mp3codec, e.data.buf, e.data.buf);

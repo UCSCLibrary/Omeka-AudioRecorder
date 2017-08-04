@@ -8,7 +8,7 @@
   <button id="ar-stop-btn" onclick="stopRecording(this);" disabled>&#9632</button>
   <p id="ar-status">Record your story!</p>
 </div>
-<h2 id="recordings">Recordings</h2>
+<h3 id="recordings">Your Current Recordings</h3>
 <ul id="recordingslist"></ul>
 <pre id="log"></pre>
 
@@ -16,6 +16,8 @@
  AUDIO_RECORDER_UPLOAD_URL = "<?php echo public_url("items/upload-audio/$this->item_id"); ?>"
  AUDIO_RECORDER_JAVASCRIPT_DIR = "<?php echo public_url("plugins/AudioRecorder/views/shared/javascripts/"); ?>"
 </script>
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="<?php echo public_url("plugins/AudioRecorder/views/shared/javascripts/init_widget.js") ?>"></script>
 <script src="<?php echo public_url("plugins/AudioRecorder/views/shared/javascripts/recordmp3.js"); ?>"></script>
 
@@ -23,8 +25,19 @@
 
 <div id="ar-dialog" style="display:none;">
   <form id="ar-upload-form">
+      <?php echo $this->csrf;?>
     <div class="field">
-      <div id="ar-username" class="two columns alpha">
+      <div id="ar-title-label" class="two columns alpha">
+        <label for="ar-title"><?php echo __('Recording Title:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php echo get_view()->formText('ar-title', ''); ?>
+      </div>
+        <p class="explanation"><?php echo __('Please enter a short title for your recording (optional)'); ?></p>
+    </div>
+
+    <div class="field">
+      <div id="ar-username-label" class="two columns alpha">
         <label for="ar-username"><?php echo __('Creator name:'); ?></label>
       </div>
       <div class="inputs five columns omega">
@@ -34,7 +47,7 @@
     </div>
 
     <div class="field">
-      <div id="ar-email" class="two columns alpha">
+      <div id="ar-email-label" class="two columns alpha">
         <label for="ar-email"><?php echo __('Email:'); ?></label>
       </div>
       <div class="inputs five columns omega">
@@ -53,7 +66,7 @@
         echo get_view()->formCheckbox('ar-license','yes',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('This certifies that we can share your story and its contents to improve our collection. For more details <a href="http://google.com">click here</a>.'); ?></p>
+      <p class="explanation"><?php echo __('This certifies that we have your permission to share your story and its contents to help improve our collection.'); ?></p>
     </div>
   </form>
 </div>

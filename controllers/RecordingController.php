@@ -6,35 +6,42 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         if(is_object($item))
             $hasItem=true;
 
-        if(get_option('audio_recorder_attachment') =='file' && $hasItem)
+
+        if(get_option('audio_recorder_attachment') =='file' && $hasItem) {
+            //TODO add relations for file attachment?
             return $item;
+        }
 
         //create a new item and attach it as much as possible
 
-        $username = is_object($user = current_user()) ? "$user->name ($user->email)" : "An Anonymous Contributor";
-        $username = isset($_POST['audio_recorder_username']) ? $_POST['audio_recorder_username'] : $username;
+        $username = is_object($user = current_user()) ? $user->name : "An Anonymous Contributor";
+        $username = isset($_REQUEST['ar-username']) && $_REQUEST['ar-username'] ? $_REQUEST['ar-username'] : $username;
+        $userString = isset($_REQUEST['ar-email']) && $_REQUEST['ar-email'] ? "$username (".$_REQUEST['ar-email'].")" : $username;
 
         $elementTable = get_db()->getTable('Element');
 
         $creatorElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Creator');
         $elements[$creatorElement->id] = array(
             array(
-                'text'=> $username,
+
+                'text'=> $userString,
                 'html' => "0"
             ));
-        //todo - if record relations is installed, 
-        //add an appropriate relation
+
+        if($username == $user->name)
+            $creator = $user;
         
         if(is_object($user) && $username !== $user->name){
+            $contributor = $user;
             $contributorElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Contributor');
             $elements[$contributorElement->id] = array(
                 array(
                     'text'=> "$user->name ($user->email)",
                     'html' => "0"
                 ));           
-            //todo - if record relations is installed, 
-            //add an appropriate relation
-        }
+
+         }
+
 
         $sourceElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Source');
         $elements[$sourceElement->id] = array(
@@ -52,43 +59,49 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
                     'html' => "1"
                 )
             );
-            //todo - if record relations is installed, 
-            //add an appropriate relation
 
-        $titleElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Title');
-        $elements[$titleElement->id] = array(
-            array(
-                'text'=> "Audio Recording ".date('Y-m-d'),
-                'html' => "0"
-            ));
+            $title = isset($_REQUEST['ar-title']) && $_REQUEST['ar-title'] != '' ? $_REQUEST['ar-title'] : "Audio Recording ".date('Y-m-d');
 
+            $titleElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Title');
+            $elements[$titleElement->id] = array(
+                array(
+                    'text'=> $title,
+                    'html' => "0"
+                ));
         }
+
+        $oralHistoryType = get_db()->getTable('ItemType')->findByName('Oral History');
         
         $fauxPost = array(
 	    'Elements'=>$elements,
-	    'item_type_id'=>'', //get the id of the Audio item type
-//	    'collection_id'=>''
+	    'item_type_id'=>$oralHistoryType->id, //get the id of the Audio item type
+//	    'collection_id'=>'',
             'public'=>(boolean)get_option('audio_recorder_public'),
 	);
 
         $recItem = new Item();
         $recItem->setPostData($fauxPost);
         $recItem->save();
+        $creator = isset($creator) ? $creator : null;
+        $contributor = isset($contributor) ? $contributor : null;
+        $this->_addRelations($recItem,$item,$creator,$contributor);
         return $recItem;
     }
     
     public function uploadAction() {
+        
+        if (class_exists('Omeka_Form_SessionCsrf')) {
+            $csrf = new Omeka_Form_SessionCsrf;
+            if (!$csrf->isValid($_POST))
+                die('Invalid token. Are you using a weird proxy or something?');
+        }
 
         if(!is_object(
             $item = $this->_getItem()))
                 die("Failure finding or creating item");
 
         //           #TODO check CSRF
-        /*            $tempDir = sys_get_temp_dir()."/omeka-audio-recorder";
-           if(!is_dir($tempDir))
-	   $res = mkdir($tempDir,0777); 
-           echo ("Res: $res"); 
-         */            
+
         $filename = 'audio_recording_' . date( 'Y-m-d-H-i-s' ) .'.mp3';
         $filename = is_null($_POST['fname']) ? $_POST['fname'] : $filename;
 
@@ -115,7 +128,8 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
             $minOrder++;
         }
         die("Success: $filename");
-    }	
+    }
+	
     public function recordAction() {
         $item = get_record_by_id("Item",$this->getParam('id'));
         $this->view->item = $item;
@@ -124,5 +138,92 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         $this->view->username = is_object($user = current_user()) ? $user->name : "";
         $this->view->email = is_object($user) ? $user->email : "";
     }	
+    
+    private function _addRelations($recItem,$item,$creator=nil,$contributor = nil,$recType='Item')
+    {
+
+        //Primary topic (relates new item to item it describes)
+        $relationProps[] = array(
+                'subject_record_type' => $recType,
+                'object_record_type' => 'Item',
+                'subject_id'=> $recItem->id,
+                'object_id' => $item->id,
+                'property_id' => get_record_relations_property_id(FOAF, 'primaryTopic'),
+                'public' => true,                
+                'user_id' => is_object($user=current_user()) ? $user->id : $item->owner_id,
+            );
+        
+        $relationProps[] = array(
+                'subject_record_type' => 'Item',
+                'subject_id' => $item->id,
+                'object_id' => $recItem->id,
+                'object_record_type' => $recType,
+                'property_id' => get_record_relations_property_id(FOAF, 'isPrimaryTopicOf'),
+                'public' => true,
+                'user_id' => is_object($user) ? $user->id : $item->owner_id,
+            );
+
+        //add record relation for creator
+        if(isset($creator) && is_object($creator)) {
+            $relationProps[] = array(
+                'subject_record_type' => $recType,
+                'subject_id' => $recItem->id,
+                'object_id' => $creator->id,
+                'object_record_type' => 'User',
+                'property_id' => get_record_relations_property_id(FRBR, 'creator'),
+                'public' => true,
+                'user_id' => is_object($user) ? $user->id : $item->owner_id,
+            );
+
+            $relationProps[] = array(
+                'object_record_type' => $recType,
+                'object_id' => $recItem->id,
+                'subject_id' => $creator->id,
+                'subject_record_type' => 'User',
+                'property_id' => get_record_relations_property_id(FRBR, 'creatorOf'),
+                'public' => true,
+                'user_id' => is_object($user) ? $user->id : $item->owner_id,
+            );
+ 
+        }
+            
+        //add record relation for contributor
+        if(isset($contributor) && is_object($contributor)) {
+            $relationProps[] = array(
+                'subject_record_type' => $recType,
+                'subject_id' => $recItem->id,
+                'object_id' => $contributor->id,
+                'object_record_type' => 'User',
+                'property_id' => get_record_relations_property_id(FRBR, 'producer'),
+                'public' => true,
+                'user_id' => is_object($user) ? $user->id : $item->owner_id,
+            );
+
+           $relationProps[] = array(
+                'object_record_type' => $recType,
+                'object_id' => $recItem->id,
+                'subject_id' => $contributor->id,
+                'subject_record_type' => 'User',
+                'property_id' => get_record_relations_property_id(FRBR, 'producerOf'),
+                'public' => true,
+                'user_id' => is_object($user) ? $user->id : $item->owner_id,
+            );
+        }
+
+        foreach($relationProps as $props) {
+            if(!isset($props['user_id']))
+                $props['user_id'] = 0;
+/*
+            if(!isset($props['property_id']) || $props['property_id'] == null) {
+                print_r($props);
+                die();
+            }
+*/
+            $relation = new RecordRelationsRelation();
+            $relation->setProps($props);
+            $relation->save();
+        }
+    }
+
 }
 ?>

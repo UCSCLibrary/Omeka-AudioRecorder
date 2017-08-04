@@ -85,7 +85,7 @@
       au.controls = true;
       au.className += "audio";
       hf.download = 'audio_recording_' + new Date().getTime() + '.mp3';
-      hf.innerHTML = '<button title="Save to your computer">Save</button>';
+      hf.innerHTML = '<button class="download" title="Save to your computer">Save</button>';
       li.appendChild(au);
       li.appendChild(hf);
 
@@ -103,8 +103,8 @@
 
       li.className += "ar-recording ";
       li.className += "disabled ";
-      jQuery(li).children().prop('disabled',true);
-      jQuery("h2#recordings").show();
+      jQuery(li).find('button').prop('disabled',true);
+      jQuery("h3#recordings").show();
       recordingslist.appendChild(li);
 
       return li;
@@ -112,12 +112,16 @@
 
     function activateLi(li,url,mp3Blob){
       liObj = jQuery(li);
-      liObj.children('.ar-upload').click(function(){showDialog(mp3Blob);});
+      liObj.children('.ar-upload').click(function(){
+        li.className += " disabled ";
+        liObj.find('button').prop('disabled',true);
+        showDialog(mp3Blob);
+      });
       liObj.children('audio').attr('src',url);
       liObj.children('a').attr('href',url);
       liObj.children('p').html("");
       liObj.removeClass('disabled');
-      liObj.children().prop('disabled',false);
+      liObj.find('button').prop('disabled',false);
     }
 
     //Mp3 conversion
@@ -133,8 +137,6 @@
 	var buffer = new Uint8Array(arrayBuffer),
             data = parseWav(buffer);
         
-        console.log('sampleRate:'+data.sampleRate);
-
 	log.innerHTML += "\n" + "Converting to Mp3";
 	li = addRecordingLi();
 
@@ -208,19 +210,29 @@
     function showDialog(mp3Data){
       dialog  = jQuery("#ar-dialog").dialog({
         autoOpen: false,
-        height: 413,
+        height: 513,
         width: 600,
         modal: true,
         buttons: {
           "Upload to Collection": function(){
-            uploadAudio(mp3Data);
+            var form = jQuery('#ar-upload-form');
+  	    var fd = new FormData(form[0]);          
+            fd.append('ar-title',jQuery('#ar-title').val());
+            fd.append('ar-username',jQuery('#ar-username').val());
+            fd.append('ar-email',jQuery('#ar-email').val());
+            uploadAudio(mp3Data,fd);
             dialog.dialog( "close" );
           },
           Cancel: function() {
             dialog.dialog( "close" );
+            jQuery('ul#recordingslist li').removeClass('disabled');
+            jQuery('ul#recordingslist').find('button').prop('disabled',false);
           }
         },
         close: function() {
+          jQuery('li.disabled').find('button').prop("disabled",false);
+          jQuery('li.disabled').find('button.ar-upload').prop("disabled",true);
+          jQuery('ul#recordingslist li').removeClass('disabled');
           jQuery('#ar-upload-form')[0].reset();
           jQuery('input').removeClass( "ui-state-error" );
         }
@@ -228,14 +240,11 @@
       dialog.dialog("open");
     }
 
-    function uploadAudio(mp3Blob){
-      var form = jQuery('#ar-upload-form');
+    function uploadAudio(mp3Blob,fd){
       var reader = new FileReader();
       reader.onload = function(event){
-	var fd = new FormData(form[0])
 	var mp3Name = encodeURIComponent('audio_recording_' + new Date().getTime() + '.mp3');
 	fd.append('fname', mp3Name);
-//LINE BELOW FAILS TO CONVERT EVENT RESULT TO STRING CORRECTLY!
 	fd.append('data', event.target.result);
 	jQuery.ajax({
 	  type: 'POST',
@@ -244,12 +253,13 @@
 	  processData: false,
 	  contentType: false
 	}).done(function(data) {
-	  console.log(data);
-	  alert('Upload processed successfully!');
+          if(data.indexOf("Success") > -1)
+	    alert('Upload processed successfully! Your story will appear here once it has been approved by our curators. You may record more stories in the mean time. Please do not submit the same stories repeatedly.');
+          else
+	    alert('There was a problem uploading your audio file. Please try again, and do not hesitate to contact our support staff if you experience repeated problems.');
 	});
       };
       reader.readAsDataURL(mp3Blob);
-//      reader.readAsArrayBuffer(mp3Blob);
     }
 
     source.connect(this.node);
