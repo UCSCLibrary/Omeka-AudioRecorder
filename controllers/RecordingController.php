@@ -6,7 +6,6 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         if(is_object($item))
             $hasItem=true;
 
-
         if(get_option('audio_recorder_attachment') =='file' && $hasItem) {
             //TODO add relations for file attachment?
             return $item;
@@ -23,7 +22,6 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         $creatorElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Creator');
         $elements[$creatorElement->id] = array(
             array(
-
                 'text'=> $userString,
                 'html' => "0"
             ));
@@ -39,9 +37,7 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
                     'text'=> "$user->name ($user->email)",
                     'html' => "0"
                 ));           
-
          }
-
 
         $sourceElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Source');
         $elements[$sourceElement->id] = array(
@@ -101,7 +97,6 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
                 die("Failure finding or creating item");
 
         //           #TODO check CSRF
-
         $filename = 'audio_recording_' . date( 'Y-m-d-H-i-s' ) .'.mp3';
         $filename = is_null($_POST['fname']) ? $_POST['fname'] : $filename;
 
