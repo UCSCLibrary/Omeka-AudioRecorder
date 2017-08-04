@@ -1,0 +1,8 @@
+<?php
+class Sitemap_SitemapController extends Omeka_Controller_Action
+{	
+	public function showAction() {
+        die('test')
+	}	
+}
+?>

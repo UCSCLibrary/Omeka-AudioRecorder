@@ -1,0 +1,35 @@
+<?php if(isset($this->related) && is_array($this->related) && !empty($this->related)): ?>
+    <h3 id="ar-related-recordings">Previously recorded stories related to this record:</h3>
+<ul id="ar-related">
+    <?php 
+//    echo 'count:'.count($this->related);
+    foreach($this->related as $related) :
+    ?>
+    <li>
+        <div class="ar-title">
+            <?php echo(metadata($related,array('Dublin Core','Title'))); ?>
+        </div>
+
+        <?php if($creator = metadata($related,array('Dublin Core','Creator'))) : ?>
+        <div class="ar-credit ar-creator">
+            <?php echo($creator); ?>
+        </div>
+        <?php elseif($contributor = metadata($related,array('Dublin Core','Contributor'))) : ?>
+        <div class="ar-credit ar-contributor">
+            <?php echo($contributor); ?>
+        </div>
+        <?php endif; ?>
+
+        <audio controls>
+            <source src="<?php echo $related->getFile()->getWebPath();?>" type="audio/mpeg">
+            <!-- fallback for non supporting browsers goes here -->
+            <p>Your browser does not support HTML5 audio, but you can still 
+                <a href="<?php echo $related->getFile()->getWebPath();?>">download the mp3 file</a>.</p>
+        </audio>
+    </li>
+    
+    <?php
+    endforeach;
+    ?>
+</div>
+<?php endif ?>
