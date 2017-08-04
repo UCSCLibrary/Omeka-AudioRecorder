@@ -34,15 +34,15 @@ class AudioRecorderPlugin extends Omeka_Plugin_AbstractPlugin
 
         echo(get_view()->partial('audio_recorder_widget.phtml',array('item_id'=>$item->id,'csrf'=>$csrf)));
 
-//        if(isset($_GET['test'])&&$_GET['test']) {
             $relationParams = array();
             $relationParams['object_record_type']='Item';
             $relationParams['object_id'] = $item->id;
             $relationParams['subject_record_type']=ucfirst(get_option('audio_recorder_attachment'));
-            $relationsParams['property_id']=get_record_relations_property_id(FRBR, 'primaryTopic');
-            $recordings = get_db()->getTable('RecordRelationsRelation')->findSubjectRecordsByParams($relationParams);
-            echo(get_view()->partial('audio_recorder_related.phtml',array('related'=>$recordings)));            
-  //      }
+            if(plugin_is_active('RecordRelations')) {
+                $relationsParams['property_id']=get_record_relations_property_id(FRBR, 'primaryTopic');
+                $recordings = get_db()->getTable('RecordRelationsRelation')->findSubjectRecordsByParams($relationParams);
+                echo(get_view()->partial('audio_recorder_related.phtml',array('related'=>$recordings)));            
+            }
 
 
     }
