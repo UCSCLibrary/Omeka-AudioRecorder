@@ -58,15 +58,45 @@
     </div>
 
     <div class="field">
-      <div id="ar-license" class="two columns alpha">
-        <label for="ar-license"><?php echo __('License Agreement:'); ?></label>
+      <div id="ar-researchRights" class="two columns alpha">
+        <label for="ar-researchRights"><?php echo __('Storage and Research Rights:'); ?></label>
       </div>
       <div class="inputs five columns omega">
         <?php 
-        echo get_view()->formCheckbox('ar-license','yes',null,array('yes','no')); 
+        echo get_view()->formCheckbox('ar-researchRights','yes',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('This certifies that we have your permission to share your story and its contents to help improve our collection.'); ?></p>
+      <p class="explanation"><?php echo __('This certifies that we have your permission to use your recording for research purposes.'); ?></p>
+    </div>
+
+    <div class="field">
+      <div id="ar-displayRights" class="two columns alpha">
+        <label for="ar-displayRights"><?php echo __('Display and Redistribution Rights:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php 
+        echo get_view()->formCheckbox('ar-displayRights','yes',null,array('yes','no')); 
+        ?>
+      </div>
+      <p class="explanation"><?php echo __('This certifies that we have your permission to display your recording publicly below this item.'); ?></p>
+    </div>
+
+    <div class="field">
+      <div id="ar-anon" class="two columns alpha">
+        <label for="ar-anon"><?php echo __('Full Anonymity:'); ?></label>
+        <br/>
+        <label for="ar-anon"><?php echo __('Email Anonymity:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php 
+        echo get_view()->formCheckbox('ar-anon','no',null,array('yes','no')); 
+        ?>
+        <br/>
+        <?php 
+        echo get_view()->formCheckbox('ar-emailanon','no',null,array('yes','no')); 
+        ?>
+      </div>
+      <p class="explanation"><?php echo __('Checking these indicates that we do not have your permission to display your name or email publicly.'); ?></p>
     </div>
   </form>
 </div>

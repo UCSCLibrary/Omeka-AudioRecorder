@@ -15,7 +15,13 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
 
         $username = is_object($user = current_user()) ? $user->name : "An Anonymous Contributor";
         $username = isset($_REQUEST['ar-username']) && $_REQUEST['ar-username'] ? $_REQUEST['ar-username'] : $username;
-        $userString = isset($_REQUEST['ar-email']) && $_REQUEST['ar-email'] ? "$username (".$_REQUEST['ar-email'].")" : $username;
+        if ($_REQUEST['ar-anon'] != "yes"){
+            /* Make sure user didn't want to be anonymous, or that their email was to remain hidden */
+            $userString = isset($_REQUEST['ar-email']) && $_REQUEST['ar-email'] && $_REQUEST['ar-emailanon'] == 'no' ? "$username (".$_REQUEST['ar-email'].")" : $username;
+        }else{
+            $userString = "An Anonymous Contributor";
+        }
+        
 
         $elementTable = get_db()->getTable('Element');
 
@@ -37,7 +43,23 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
                     'text'=> "$user->name ($user->email)",
                     'html' => "0"
                 ));           
+         }else{
+            $contributorElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Contributor');
+            $elements[$contributorElement->id] = array(
+                array(
+                    'text'=> "$username (".$_REQUEST['ar-email'].")",
+                    'html' => "0"
+                )); 
          }
+
+        $rightsString = (isset($_REQUEST['ar-researchRights']) && $_REQUEST['ar-researchRights'] == 'yes' ? 'Research & ' : 'No Research & ') . (isset($_REQUEST['ar-displayRights']) && $_REQUEST['ar-displayRights'] == 'yes' ? 'Display' : 'No Display');
+        $rightsElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Rights');
+        $elements[$rightsElement->id] = array(
+            array(
+                'text'=> "$rightsString",
+                'html' => "0"
+            )
+        );
 
         $sourceElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Source');
         $elements[$sourceElement->id] = array(
@@ -85,6 +107,10 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
     }
     
     public function uploadAction() {
+
+        if ($_REQUEST['ar-researchRights'] == 'no'){
+            die("If you want to upload, please allow us Storage and Research rights, please.");
+        }
         
         if (class_exists('Omeka_Form_SessionCsrf')) {
             $csrf = new Omeka_Form_SessionCsrf;
