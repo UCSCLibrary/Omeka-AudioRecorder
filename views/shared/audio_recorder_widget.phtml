@@ -66,7 +66,7 @@
         echo get_view()->formCheckbox('ar-researchRights','yes',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('This certifies that we have your permission to use your recording for research purposes.'); ?></p>
+      <p class="explanation"><?php echo __('This certifies that we have your permission to store your recording on our servers and use your recording for research purposes.'); ?></p>
     </div>
 
     <div class="field">
@@ -84,19 +84,13 @@
     <div class="field">
       <div id="ar-anon" class="two columns alpha">
         <label for="ar-anon"><?php echo __('Full Anonymity:'); ?></label>
-        <br/>
-        <label for="ar-anon"><?php echo __('Email Anonymity:'); ?></label>
       </div>
       <div class="inputs five columns omega">
         <?php 
         echo get_view()->formCheckbox('ar-anon','no',null,array('yes','no')); 
         ?>
-        <br/>
-        <?php 
-        echo get_view()->formCheckbox('ar-emailanon','no',null,array('yes','no')); 
-        ?>
       </div>
-      <p class="explanation"><?php echo __('Checking these indicates that we do not have your permission to display your name or email publicly.'); ?></p>
+      <p class="explanation"><?php echo __('Checking this box indicates that we do not have your permission to display your name publicly.'); ?></p>
     </div>
   </form>
 </div>

@@ -17,7 +17,7 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         $username = isset($_REQUEST['ar-username']) && $_REQUEST['ar-username'] ? $_REQUEST['ar-username'] : $username;
         if ($_REQUEST['ar-anon'] != "yes"){
             /* Make sure user didn't want to be anonymous, or that their email was to remain hidden */
-            $userString = isset($_REQUEST['ar-email']) && $_REQUEST['ar-email'] && $_REQUEST['ar-emailanon'] == 'no' ? "$username (".$_REQUEST['ar-email'].")" : $username;
+            $userString = $username;
         }else{
             $userString = "An Anonymous Contributor";
         }
