@@ -118,9 +118,8 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
                 die('Invalid token. Are you using a weird proxy or something?');
         }
 
-        if(!is_object(
-            $item = $this->_getItem()))
-                die("Failure finding or creating item");
+        if(!is_object($item = $this->_getItem()))
+            die("Failure finding or creating item");
 
         //           #TODO check CSRF
         $filename = 'audio_recording_' . date( 'Y-m-d-H-i-s' ) .'.mp3';
