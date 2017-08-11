@@ -33,7 +33,7 @@
       <div class="inputs five columns omega">
         <?php echo get_view()->formText('ar-title', ''); ?>
       </div>
-        <p class="explanation"><?php echo __('Please enter a short title for your recording (optional)'); ?></p>
+        <p class="explanation"><?php echo __('Please enter a short title for your recording'); ?></p>
     </div>
 
     <div class="field">
@@ -43,7 +43,7 @@
       <div class="inputs five columns omega">
         <?php echo get_view()->formText('ar-username', $this->username); ?>
       </div>
-        <p class="explanation"><?php echo __('Please enter the preferred name of the person or people who voice(s) appear on the recording.'); ?></p>
+        <p class="explanation"><?php echo __('Please enter the preferred name of the person or people whose voice(s) appear on the recording.'); ?></p>
     </div>
 
     <div class="field">
@@ -59,38 +59,37 @@
 
     <div class="field">
       <div id="ar-researchRights" class="two columns alpha">
-        <label for="ar-researchRights"><?php echo __('Storage and Research Rights:'); ?></label>
+        <label for="ar-researchRights"><?php echo __('I agree to the Terms and Conditions:'); ?></label>
       </div>
       <div class="inputs five columns omega">
         <?php 
         echo get_view()->formCheckbox('ar-researchRights','yes',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('This certifies that we have your permission to store your recording on our servers and use your recording for research purposes.'); ?></p>
+      <p class="explanation" stlye="font-colour=blue"><a href='/licenseagreement'><?php echo __('In order to contribute, you must read and agree to the Terms and Conditions.'); ?></a></p>
     </div>
 
     <div class="field">
       <div id="ar-displayRights" class="two columns alpha">
-        <label for="ar-displayRights"><?php echo __('Display and Redistribution Rights:'); ?></label>
+        <label for="ar-displayRights"><?php echo __('Publish my contribution publicly on the web:'); ?></label>
       </div>
       <div class="inputs five columns omega">
         <?php 
         echo get_view()->formCheckbox('ar-displayRights','yes',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('This certifies that we have your permission to display your recording publicly below this item.'); ?></p>
     </div>
 
     <div class="field">
       <div id="ar-anon" class="two columns alpha">
-        <label for="ar-anon"><?php echo __('Full Anonymity:'); ?></label>
+        <label for="ar-anon"><?php echo __('Contribute anonymously:'); ?></label>
       </div>
       <div class="inputs five columns omega">
         <?php 
         echo get_view()->formCheckbox('ar-anon','no',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('Checking this box indicates that we do not have your permission to display your name publicly.'); ?></p>
+      <p class="explanation"><?php echo __('Checking this option will display the contributor name as "anonymous"  when displayed publicly.'); ?></p>
     </div>
   </form>
 </div>

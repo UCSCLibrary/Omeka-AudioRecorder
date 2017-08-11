@@ -109,7 +109,7 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
     public function uploadAction() {
 
         if ($_REQUEST['ar-researchRights'] == 'no'){
-            die("If you want to upload, please allow us Storage and Research rights, please.");
+            die("If you want to upload to our collection, please agree to the terms and conditions.");
         }
         
         if (class_exists('Omeka_Form_SessionCsrf')) {
