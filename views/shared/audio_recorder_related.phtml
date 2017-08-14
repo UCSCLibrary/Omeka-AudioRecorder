@@ -14,10 +14,6 @@
         <div class="ar-credit ar-creator">
             <?php echo($creator); ?>
         </div>
-        <?php elseif($contributor = metadata($related,array('Dublin Core','Contributor'))) : ?>
-        <div class="ar-credit ar-contributor">
-            <?php echo($contributor); ?>
-        </div>
         <?php endif; ?>
 
         <audio controls>
