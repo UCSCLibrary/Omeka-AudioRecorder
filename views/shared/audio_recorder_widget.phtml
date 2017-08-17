@@ -66,7 +66,7 @@
         echo get_view()->formCheckbox('ar-researchRights','yes',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><a href='/licenseagreement' style="color:blue" target="_blank"><?php echo __('In order to contribute, you must read and agree to the Terms and Conditions.'); ?></a></p>
+      <p class="explanation"><?php echo __("In order to contribute, you must read and agree to the <a href='/licenseagreement' style='color:blue' target='_blank'>Terms and Conditions</a>."); ?></p>
     </div>
 
     <div class="field">
@@ -82,14 +82,14 @@
 
     <div class="field">
       <div id="ar-anon" class="two columns alpha">
-        <label for="ar-anon"><?php echo __('Contribute anonymously:'); ?></label>
+        <label for="ar-anon"><?php echo __('Publish anonymously:'); ?></label>
       </div>
       <div class="inputs five columns omega">
         <?php 
         echo get_view()->formCheckbox('ar-anon','no',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('Checking this option will display the contributor name as "anonymous"  when displayed publicly.'); ?></p>
+      <p class="explanation"><?php echo __('Checking this option will display the contributor name as "anonymous" when displayed publicly.'); ?></p>
     </div>
   </form>
 </div>
