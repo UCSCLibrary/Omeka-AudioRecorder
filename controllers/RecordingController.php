@@ -105,21 +105,37 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         $this->_addRelations($recItem,$item,$creator,$contributor);
         return $recItem;
     }
+
+    private function ajax_respond($response_text,$error_code=false) {
+        $response = $this->getResponse();
+        $response->setHeader('Content-Type', 'text/html');
+        $response->appendBody($response_text);
+
+	if($error_code) {
+		$error_code = is_integer($error_code) ? $error_code : 400;
+		$response->setHttpResponseCode($error_code);
+	}			
+        $response->sendResponse();
+        exit;
+    }
+
     
     public function uploadAction() {
 
-        if ($_REQUEST['ar-researchRights'] == 'no'){
-            die("If you want to upload to our collection, please agree to the terms and conditions.");
+        if (isset($_REQUEST['ar-researchRights']) && $_REQUEST['ar-researchRights'] == 'no'){
+		$this->ajax_respond("If you want to upload, please allow us Storage and Research rights, please.",451);
+//            die("If you want to upload, please allow us Storage and Research rights, please.");
         }
         
         if (class_exists('Omeka_Form_SessionCsrf')) {
             $csrf = new Omeka_Form_SessionCsrf;
-            if (!$csrf->isValid($_POST))
-                die('Invalid token. Are you using a weird proxy or something?');
+            if (!$csrf->isValid($_POST)) {
+		$this->ajax_respond("Invalid Token",401);
+	    }	
         }
 
         if(!is_object($item = $this->_getItem()))
-            die("Failure finding or creating item");
+		$this->ajax_respond("Failure finding or creating item",404);
 
         //           #TODO check CSRF
         $filename = 'audio_recording_' . date( 'Y-m-d-H-i-s' ) .'.mp3';
@@ -147,7 +163,7 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
             $file->save();
             $minOrder++;
         }
-        die("Success: $filename");
+	$this->ajax_respond("Success: $filename");
     }
 	
     public function recordAction() {

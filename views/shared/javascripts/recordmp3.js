@@ -251,13 +251,20 @@
 	  url: AUDIO_RECORDER_UPLOAD_URL,
 	  data: fd,
 	  processData: false,
-	  contentType: false
-	}).done(function(data) {
-          if(data.indexOf("Success") > -1)
-	    alert('Upload processed successfully! Your story will appear here once it has been approved by our curators. You may record more stories in the mean time. Please do not submit the same stories repeatedly.');
-          else
-	    alert('There was a problem uploading your audio file. Please try again, and do not hesitate to contact our support staff if you experience repeated problems.');
-	});
+	  contentType: false,
+	  error: function(response,status,e) {
+		 alert('There was a problem uploading your audio file. '+response.responseText+' Please try again, and do not hesitate to contact our support staff if you experience repeated problems.');
+		},
+	  success: function(data,status,response) { 
+		 alert('Upload processed successfully! Your story will appear here once it has been approved by our curators. You may record more stories in the mean time.');
+		}
+	})
+//.done(function(data) {
+//          if(data.indexOf("Success") > -1)
+//	    alert('Upload processed successfully! Your story will appear here once it has been approved by our curators. You may record more stories in the m$
+//          else
+//	    alert('There was a problem uploading your audio file. Please try again, and do not hesitate to contact our support staff if you experience repeated problems.');
+//	});
       };
       reader.readAsDataURL(mp3Blob);
     }
