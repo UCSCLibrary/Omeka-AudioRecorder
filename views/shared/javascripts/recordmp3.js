@@ -113,8 +113,8 @@
     function activateLi(li,url,mp3Blob){
       liObj = jQuery(li);
       liObj.children('.ar-upload').click(function(){
-        li.className += " disabled ";
-        liObj.find('button').prop('disabled',true);
+        /*li.className += " disabled ";
+        liObj.find('button').prop('disabled',true);*/
         showDialog(mp3Blob);
       });
       liObj.children('audio').attr('src',url);
@@ -253,7 +253,7 @@
 	  processData: false,
 	  contentType: false,
 	  error: function(response,status,e) {
-		 alert('There was a problem uploading your audio file. '+response.responseText+' Please try again, and do not hesitate to contact our support staff if you experience repeated problems.');
+		 alert('There was a problem uploading your audio file. '+response.responseText+' Please try again.');
 		},
 	  success: function(data,status,response) { 
 		 alert('Upload processed successfully! Your story will appear here once it has been approved by our curators. You may record more stories in the mean time.');
