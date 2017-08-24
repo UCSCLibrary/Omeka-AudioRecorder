@@ -2,10 +2,10 @@
 <div id="ar-widget"
      onclick="requestMic(this);"
      class="ar-tooltip"
-     data-tooltip="Do you have something to say about the image or document displayed here? Click here to record your story. You can save the result on your computer, or upload it to improve our collection.">
+     data-tooltip="Do you have something to say about the image or document displayed here? Click here to record your story. You can save the result on your computer, or upload it to improve our collection. We recommend using Google Chrome. Please keep recordings to less than three (3) minutes.">
   <button id="ar-record-btn" title="Record">&#9679;</button>
   <button id="ar-pause-btn" disabled title="Pause">||</button>
-  <button id="ar-stop-btn" onclick="stopRecording(this);" disabled>&#9632</button>
+  <button id="ar-stop-btn" onclick="stopRecording(this);" disabled>&#9632;</button>
   <p id="ar-status">Record your story!</p>
 </div>
 <h3 id="recordings">Your Current Recordings</h3>
@@ -33,7 +33,7 @@
       <div class="inputs five columns omega">
         <?php echo get_view()->formText('ar-title', ''); ?>
       </div>
-        <p class="explanation"><?php echo __('Please enter a short title for your recording (optional)'); ?></p>
+        <p class="explanation"><?php echo __('Please enter a short title for your recording'); ?></p>
     </div>
 
     <div class="field">
@@ -43,7 +43,7 @@
       <div class="inputs five columns omega">
         <?php echo get_view()->formText('ar-username', $this->username); ?>
       </div>
-        <p class="explanation"><?php echo __('Please enter the preferred name of the person or people who voice(s) appear on the recording.'); ?></p>
+        <p class="explanation"><?php echo __('Please enter the preferred name of the person or people whose voice(s) appear on the recording.'); ?></p>
     </div>
 
     <div class="field">
@@ -53,20 +53,43 @@
       <div class="inputs five columns omega">
         <?php echo get_view()->formText('ar-email', $this->email); ?>
       </div>
-        <p class="explanation"><?php echo __('We will keep this address private, and use it only if we have administrative questions about your audio upload.'); ?></p>
+        <p class="explanation"><?php echo __('We will keep this address private and use it only if we have administrative questions about your audio upload.'); ?></p>
 
     </div>
 
     <div class="field">
-      <div id="ar-license" class="two columns alpha">
-        <label for="ar-license"><?php echo __('License Agreement:'); ?></label>
+      <div id="ar-researchRights" class="two columns alpha">
+        <label for="ar-researchRights"><?php echo __('I agree to the Terms and Conditions:'); ?></label>
       </div>
       <div class="inputs five columns omega">
         <?php 
-        echo get_view()->formCheckbox('ar-license','yes',null,array('yes','no')); 
+        echo get_view()->formCheckbox('ar-researchRights','yes',null,array('yes','no')); 
         ?>
       </div>
-      <p class="explanation"><?php echo __('This certifies that we have your permission to share your story and its contents to help improve our collection.'); ?></p>
+      <p class="explanation"><?php echo __("In order to contribute, you must read and agree to the <a href='/licenseagreement' style='color:blue' target='_blank'>Terms and Conditions</a>."); ?></p>
+    </div>
+
+    <div class="field">
+      <div id="ar-displayRights" class="two columns alpha">
+        <label for="ar-displayRights"><?php echo __('Publish my contribution publicly on the web:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php 
+        echo get_view()->formCheckbox('ar-displayRights','yes',null,array('yes','no')); 
+        ?>
+      </div>
+    </div>
+
+    <div class="field">
+      <div id="ar-anon" class="two columns alpha">
+        <label for="ar-anon"><?php echo __('Publish anonymously:'); ?></label>
+      </div>
+      <div class="inputs five columns omega">
+        <?php 
+        echo get_view()->formCheckbox('ar-anon','no',null,array('yes','no')); 
+        ?>
+      </div>
+      <p class="explanation"><?php echo __('Checking this option will display the contributor name as "anonymous" when displayed publicly.'); ?></p>
     </div>
   </form>
 </div>

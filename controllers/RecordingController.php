@@ -15,7 +15,13 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
 
         $username = is_object($user = current_user()) ? $user->name : "An Anonymous Contributor";
         $username = isset($_REQUEST['ar-username']) && $_REQUEST['ar-username'] ? $_REQUEST['ar-username'] : $username;
-        $userString = isset($_REQUEST['ar-email']) && $_REQUEST['ar-email'] ? "$username (".$_REQUEST['ar-email'].")" : $username;
+        if ($_REQUEST['ar-anon'] != "yes"){
+            /* Make sure user didn't want to be anonymous, or that their email was to remain hidden */
+            $userString = $username;
+        }else{
+            $userString = "An Anonymous Contributor";
+        }
+        
 
         $elementTable = get_db()->getTable('Element');
 
@@ -37,7 +43,23 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
                     'text'=> "$user->name ($user->email)",
                     'html' => "0"
                 ));           
+         }else{
+            $contributorElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Contributor');
+            $elements[$contributorElement->id] = array(
+                array(
+                    'text'=> "$username (".$_REQUEST['ar-email'].")",
+                    'html' => "0"
+                )); 
          }
+
+        $rightsString = (isset($_REQUEST['ar-researchRights']) && $_REQUEST['ar-researchRights'] == 'yes' ? 'Research & ' : 'No Research & ') . (isset($_REQUEST['ar-displayRights']) && $_REQUEST['ar-displayRights'] == 'yes' ? 'Display' : 'No Display');
+        $rightsElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Rights');
+        $elements[$rightsElement->id] = array(
+            array(
+                'text'=> "$rightsString",
+                'html' => "0"
+            )
+        );
 
         $sourceElement = $elementTable->findByElementSetNameAndElementName('Dublin Core','Source');
         $elements[$sourceElement->id] = array(
@@ -83,18 +105,36 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
         $this->_addRelations($recItem,$item,$creator,$contributor);
         return $recItem;
     }
+
+    private function ajax_respond($response_text,$error_code=false) {
+        $response = $this->getResponse();
+        $response->setHeader('Content-Type', 'text/html');
+        $response->appendBody($response_text);
+
+	if($error_code) {
+		$error_code = is_integer($error_code) ? $error_code : 400;
+		$response->setHttpResponseCode($error_code);
+	}			
+        $response->sendResponse();
+        exit;
+    }
+
     
     public function uploadAction() {
+
+        if (isset($_REQUEST['ar-researchRights']) && $_REQUEST['ar-researchRights'] == 'no'){
+		$this->ajax_respond("If you want to upload, you must agree to the \"Terms and Services\" which allow storage and research rights.",451);
+        }
         
         if (class_exists('Omeka_Form_SessionCsrf')) {
             $csrf = new Omeka_Form_SessionCsrf;
-            if (!$csrf->isValid($_POST))
-                die('Invalid token. Are you using a weird proxy or something?');
+            if (!$csrf->isValid($_POST)) {
+		$this->ajax_respond("Invalid Token",401);
+	    }	
         }
 
-        if(!is_object(
-            $item = $this->_getItem()))
-                die("Failure finding or creating item");
+        if(!is_object($item = $this->_getItem()))
+		$this->ajax_respond("Failure finding or creating item",404);
 
         //           #TODO check CSRF
         $filename = 'audio_recording_' . date( 'Y-m-d-H-i-s' ) .'.mp3';
@@ -122,7 +162,7 @@ class AudioRecorder_RecordingController extends Omeka_Controller_AbstractActionC
             $file->save();
             $minOrder++;
         }
-        die("Success: $filename");
+	$this->ajax_respond("Success: $filename");
     }
 	
     public function recordAction() {
